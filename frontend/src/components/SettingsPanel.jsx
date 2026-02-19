@@ -24,7 +24,7 @@ const HDRI_PRESETS = [
 
 export default function SettingsPanel() {
   const dispatch = useDispatch();
-  const { backgroundColor, wireframe_mode, material_type, hdri_preset } = useSelector(
+  const { backgroundColor, wireframe_mode, material_type, hdri_preset, isSaving } = useSelector(
     (state) => state.settings
   );
   const { mediaId } = useSelector((state) => state.media);
@@ -41,8 +41,38 @@ export default function SettingsPanel() {
     );
   };
 
+  const loaderStyles = {
+    spinner: {
+      display: "inline-block",
+      width: "16px",
+      height: "16px",
+      border: "2px solid rgba(0,0,0,.1)",
+      borderRadius: "50%",
+      borderTopColor: "#09f",
+      animation: "spin 1s ease-in-out infinite",
+      marginRight: "8px",
+    },
+    buttonContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+    },
+    success: {
+      color: "#388e3c",
+      marginTop: "10px",
+      padding: "8px",
+      backgroundColor: "#e8f5e9",
+      borderRadius: "4px",
+    },
+  };
+
   return (
     <div style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
       <h3>Settings</h3>
 
       <div style={{ marginBottom: "15px" }}>
@@ -135,9 +165,22 @@ export default function SettingsPanel() {
         </label>
       </div>
 
-      <button onClick={handleSave} style={{ padding: "8px 16px", cursor: "pointer" }}>
-        Save Settings
-      </button>
+      <div style={loaderStyles.buttonContainer}>
+        <button 
+          onClick={handleSave} 
+          style={{ padding: "8px 16px", cursor: isSaving ? "not-allowed" : "pointer", opacity: isSaving ? 0.6 : 1 }}
+          disabled={isSaving}
+        >
+          {isSaving ? (
+            <>
+              <span style={loaderStyles.spinner}></span>
+              Saving...
+            </>
+          ) : (
+            "Save Settings"
+          )}
+        </button>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { uploadModel, deleteModel, clearMedia } from "../slice/mediaSlice";
 
 export default function UploadSection() {
   const dispatch = useDispatch();
-  const { mediaId, modelUrl } = useSelector((state) => state.media);
+  const { mediaId, modelUrl, isLoading, isDeleting } = useSelector((state) => state.media);
 
   const handleUpload = (e) => {
     const file = e.target.files[0];
@@ -17,10 +17,46 @@ export default function UploadSection() {
     }
   };
 
+  const loaderStyles = {
+    spinner: {
+      display: "inline-block",
+      width: "20px",
+      height: "20px",
+      border: "3px solid rgba(0,0,0,.1)",
+      borderRadius: "50%",
+      borderTopColor: "#09f",
+      animation: "spin 1s ease-in-out infinite",
+    },
+    container: {
+      marginTop: "10px",
+    },
+  };
+
   return (
-    <div>
-      <input type="file" onChange={handleUpload} />
-      {modelUrl && <button onClick={handleDelete}>Delete Media</button>}
+    <div style={loaderStyles.container}>
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+      <input type="file" onChange={handleUpload} disabled={isLoading || isDeleting} />
+      
+      {isLoading && (
+        <div style={{ marginTop: "10px" }}>
+          <div style={loaderStyles.spinner}></div>
+          <span style={{ marginLeft: "8px" }}>Uploading model...</span>
+        </div>
+      )}
+
+      {modelUrl && !isLoading && (
+        <button 
+          onClick={handleDelete} 
+          disabled={isDeleting}
+          style={{ marginTop: "10px", opacity: isDeleting ? 0.6 : 1 }}
+        >
+          {isDeleting ? "Deleting..." : "Delete Media"}
+        </button>
+      )}
     </div>
   );
 }

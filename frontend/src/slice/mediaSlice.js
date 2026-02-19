@@ -51,6 +51,8 @@ const mediaSlice = createSlice({
   initialState: {
     modelUrl: null,
     mediaId: null,
+    isLoading: false,
+    isDeleting: false,
   },
   reducers: {
     clearMedia: (state) => {
@@ -59,18 +61,40 @@ const mediaSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(uploadModel.fulfilled, (state, action) => {
-      state.modelUrl = action.payload.file_url;
-      state.mediaId = action.payload.media_id;
-    });
-    builder.addCase(deleteModel.fulfilled, (state) => {
-      state.modelUrl = null;
-      state.mediaId = null;
-    });
-    builder.addCase(fetchLatestMedia.fulfilled, (state, action) => {
-      state.modelUrl = action.payload.media_url;
-      state.mediaId = action.payload._id;
-    });
+    builder
+      .addCase(uploadModel.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadModel.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.modelUrl = action.payload.file_url;
+        state.mediaId = action.payload.media_id;
+      })
+      .addCase(uploadModel.rejected, (state, action) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteModel.pending, (state) => {
+        state.isDeleting = true;
+      })
+      .addCase(deleteModel.fulfilled, (state) => {
+        state.isDeleting = false;
+        state.modelUrl = null;
+        state.mediaId = null;
+      })
+      .addCase(deleteModel.rejected, (state, action) => {
+        state.isDeleting = false;
+      })
+      .addCase(fetchLatestMedia.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchLatestMedia.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.modelUrl = action.payload.media_url;
+        state.mediaId = action.payload._id;
+      })
+      .addCase(fetchLatestMedia.rejected, (state, action) => {
+        state.isLoading = false;
+      });
   },
 });
 

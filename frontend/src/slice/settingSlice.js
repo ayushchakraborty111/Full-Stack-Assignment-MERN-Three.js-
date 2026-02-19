@@ -29,6 +29,8 @@ const settingsSlice = createSlice({
     wireframe_mode: false,
     material_type: "standard",
     hdri_preset: "sunset",
+    isLoading: false,
+    isSaving: false,
   },
   reducers: {
     setLocalSettings: (state, action) => {
@@ -49,24 +51,39 @@ const settingsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(saveSettings.fulfilled, (state, action) => {
-      state.backgroundColor = action.payload.data.backgroundColor;
-      state.wireframe_mode = action.payload.data.wireframe_mode;
-    });
-    builder.addCase(fetchSettings.fulfilled, (state, action) => {
-      if (action.payload.length > 0) {
-        const latest = action.payload[0];
-        state.backgroundColor = latest.backgroundColor;
-        state.wireframe_mode = latest.wireframe_mode;
-        state.material_type = latest.material_type || "standard";
-        state.hdri_preset = latest.hdri_preset || "sunset";
-      } else {
-        state.backgroundColor = "#ffffff";
-        state.wireframe_mode = false;
-        state.material_type = "standard";
-        state.hdri_preset = "sunset";
-      }
-    });
+    builder
+      .addCase(saveSettings.pending, (state) => {
+        state.isSaving = true;
+      })
+      .addCase(saveSettings.fulfilled, (state, action) => {
+        state.isSaving = false;
+        state.backgroundColor = action.payload.data.backgroundColor;
+        state.wireframe_mode = action.payload.data.wireframe_mode;
+      })
+      .addCase(saveSettings.rejected, (state, action) => {
+        state.isSaving = false;
+      })
+      .addCase(fetchSettings.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchSettings.fulfilled, (state, action) => {
+        state.isLoading = false;
+        if (action.payload.length > 0) {
+          const latest = action.payload[0];
+          state.backgroundColor = latest.backgroundColor;
+          state.wireframe_mode = latest.wireframe_mode;
+          state.material_type = latest.material_type || "standard";
+          state.hdri_preset = latest.hdri_preset || "sunset";
+        } else {
+          state.backgroundColor = "#ffffff";
+          state.wireframe_mode = false;
+          state.material_type = "standard";
+          state.hdri_preset = "sunset";
+        }
+      })
+      .addCase(fetchSettings.rejected, (state, action) => {
+        state.isLoading = false;
+      });
   },
 });
 
