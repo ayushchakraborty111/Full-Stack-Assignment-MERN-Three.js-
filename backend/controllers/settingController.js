@@ -2,11 +2,11 @@ const Setting = require("../models/settings");
 
 exports.saveSettings = async (req, res) => {
   try {
-    const { media_id, backgroundColor, wireframe_mode } = req.body;
+    const { media_id, backgroundColor, wireframe_mode, material_type, hdri_preset } = req.body;
 
     const setting = await Setting.findOneAndUpdate(
       { media_id },
-      { backgroundColor, wireframe_mode },
+      { backgroundColor, wireframe_mode, material_type, hdri_preset },
       { new: true, upsert: true }
     );
 

@@ -15,6 +15,14 @@ const settingSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    material_type: {
+      type: String,
+      default: "standard",
+    },
+    hdri_preset: {
+      type: String,
+      default: "sunset",
+    },
   },
   { timestamps: true },
 );
