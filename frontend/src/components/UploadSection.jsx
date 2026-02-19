@@ -3,7 +3,7 @@ import { uploadModel, deleteModel, clearMedia } from "../slice/mediaSlice";
 
 export default function UploadSection() {
   const dispatch = useDispatch();
-  const { mediaId, modelUrl, isLoading, isDeleting } = useSelector((state) => state.media);
+  const { mediaId, modelUrl, isLoading, isDeleting, error } = useSelector((state) => state.media);
 
   const handleUpload = (e) => {
     const file = e.target.files[0];
@@ -30,6 +30,13 @@ export default function UploadSection() {
     container: {
       marginTop: "10px",
     },
+    error: {
+      color: "#d32f2f",
+      marginTop: "8px",
+      padding: "8px",
+      backgroundColor: "#ffebee",
+      borderRadius: "4px",
+    },
   };
 
   return (
@@ -45,6 +52,12 @@ export default function UploadSection() {
         <div style={{ marginTop: "10px" }}>
           <div style={loaderStyles.spinner}></div>
           <span style={{ marginLeft: "8px" }}>Uploading model...</span>
+        </div>
+      )}
+
+      {error && (
+        <div style={loaderStyles.error}>
+          Error: {error}
         </div>
       )}
 

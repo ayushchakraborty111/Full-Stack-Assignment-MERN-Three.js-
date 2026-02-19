@@ -24,7 +24,7 @@ const HDRI_PRESETS = [
 
 export default function SettingsPanel() {
   const dispatch = useDispatch();
-  const { backgroundColor, wireframe_mode, material_type, hdri_preset, isSaving } = useSelector(
+  const { backgroundColor, wireframe_mode, material_type, hdri_preset, isSaving, error } = useSelector(
     (state) => state.settings
   );
   const { mediaId } = useSelector((state) => state.media);
@@ -57,11 +57,11 @@ export default function SettingsPanel() {
       alignItems: "center",
       gap: "10px",
     },
-    success: {
-      color: "#388e3c",
+    error: {
+      color: "#d32f2f",
       marginTop: "10px",
       padding: "8px",
-      backgroundColor: "#e8f5e9",
+      backgroundColor: "#ffebee",
       borderRadius: "4px",
     },
   };
@@ -181,6 +181,12 @@ export default function SettingsPanel() {
           )}
         </button>
       </div>
+
+      {error && (
+        <div style={loaderStyles.error}>
+          Error: {error}
+        </div>
+      )}
     </div>
   );
 }
