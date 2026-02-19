@@ -53,7 +53,7 @@ exports.deleteModel = async (req, res) => {
 
     await Promise.all([
       Media.findByIdAndDelete(req.params.mediaId),
-      Setting.findOne({ media_id: req.params.mediaId }),
+      Setting.deleteOne({ media_id: req.params.mediaId }),
     ]);
 
     res.json({ message: "Media deleted successfully" });

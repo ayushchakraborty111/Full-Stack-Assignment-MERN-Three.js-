@@ -5,7 +5,7 @@ import ModelViewer from "./components/ModelViewer";
 import SettingsPanel from "./components/SettingsPanel";
 import UploadSection from "./components/UploadSection";
 import { fetchLatestMedia } from "./slice/mediaSlice";
-import { fetchSettings } from "./slice/settingSlice";
+import { fetchSettings, clearSettings } from "./slice/settingSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -18,6 +18,8 @@ function App() {
   useEffect(() => {
     if (mediaId) {
       dispatch(fetchSettings(mediaId));
+    } else {
+      dispatch(clearSettings());
     }
   }, [mediaId, dispatch]);
 

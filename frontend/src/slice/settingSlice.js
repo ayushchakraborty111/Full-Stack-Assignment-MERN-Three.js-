@@ -33,6 +33,10 @@ const settingsSlice = createSlice({
       state.backgroundColor = action.payload.backgroundColor;
       state.wireframe_mode = action.payload.wireframe_mode;
     },
+    clearSettings: (state) => {
+      state.backgroundColor = "#ffffff";
+      state.wireframe_mode = false;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(saveSettings.fulfilled, (state, action) => {
@@ -44,10 +48,13 @@ const settingsSlice = createSlice({
         const latest = action.payload[0];
         state.backgroundColor = latest.backgroundColor;
         state.wireframe_mode = latest.wireframe_mode;
+      } else {
+        state.backgroundColor = "#ffffff";
+        state.wireframe_mode = false;
       }
     });
   },
 });
 
-export const { setLocalSettings } = settingsSlice.actions;
+export const { setLocalSettings, clearSettings } = settingsSlice.actions;
 export default settingsSlice.reducer;
